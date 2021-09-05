@@ -143,20 +143,28 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <form>
+            <div class="alert alert-success alert-dismissible fade show d-none" role="alert">
+              <strong>Terima Kasih!</strong> Pesan anda sudah kami terima.
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <form name="contact-form">
               <div class="mb-3">
                 <label for="name" class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="name" aria-describedby="name">
+                <input type="text" class="form-control" id="name" aria-describedby="name" name="nama">
               </div>
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" aria-describedby="email">
+                <input type="email" class="form-control" id="email" aria-describedby="email" name="email">
               </div>
               <div class="mb-3">
                 <label for="pesan" class="form-label">Pesan</label>
-                <textarea class="form-control" id="pesan" rows="3"></textarea>
+                <textarea class="form-control" id="pesan" rows="3" name="pesan"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary">Kirim</button>
+              <button type="submit" class="btn btn-primary btn-kirim">Kirim</button>
+              <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+              </button>
             </form>
           </div>
         </div>
@@ -172,7 +180,40 @@
         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
       </svg> by <a href="https://www.instagram.com/search.my" class="text-white fw-bold">Dhaifullah Hilmy</a></p>
     </footer>
+
+    <!-- Javascript Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+
+    <!-- Javascript Google Sheet -->
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzLZtprFWVOvO4aDcdGRP3MQQeznSxO8Vf9rPulAa-3mFFKl4xJf8r84loafbhH755now/exec'
+      const form = document.forms['contact-form']
+      const kirim = document.querySelector('.btn-kirim');
+      const loading = document.querySelector('.btn-loading');
+      const alert = document.querySelector('.alert');
+    
+      form.addEventListener('submit', e => {
+        e.preventDefault()
+        // Tombol kirim di klik
+        // Tampilkan tombol loading, hilangkan tombol kirim
+        loading.classList.toggle('d-none');
+        kirim.classList.toggle('d-none');
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            // Tampilkan tombol kirim, hilangkan tombol loading
+            loading.classList.toggle('d-none');
+            kirim.classList.toggle('d-none');
+            // Tampilkan Alert
+            alert.classList.toggle('d-none');
+            // Reset Form
+            form.reset();
+            console.log('Success!', response)
+          })
+          .catch(error => console.error('Error!', error.message))
+      })
+    </script>
+
+    <!-- Javascript AOS -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
       const galleryImage = document.querySelectorAll('.gallery-img');
@@ -188,6 +229,8 @@
         duration: 1000,
       });
     </script>
+
+    <!-- Javascript GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/TextPlugin.min.js"></script>
     <script>
